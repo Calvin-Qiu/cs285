@@ -9,7 +9,7 @@ To run Humanoid:
 python cs285/scripts/run_hw1_behavior_cloning.py --expert_policy_file cs285/policies/experts/Humanoid.pkl --env_name Humanoid-v2 --exp_name test_bc_humanoid --n_iter 1 --expert_data cs285/expert_data/expert_data_Humanoid-v2.pkl --eval_batch_size 10000 --video_log_freq -1
 ```
 
-The following table comapres Behavioral Cloning with Expert policy in Ant and Humanoid environment. We see that Behavioral Cloning achieves more than 50% of expert reward during evaluation in Ant but less than 3% in Humanoi
+The following table comapres Behavioral Cloning with Expert policy in Ant and Humanoid environment. We see that Behavioral Cloning achieves more than 50% of expert reward during evaluation in Ant but less than 3% in Humanoid.
 |                |   Expert Mean   | Expert Std |   BC Mean   | BC Std |
 | :------------: | :-----: | :------: | :-----: | :------: |
 |  Ant   | 4713.65 | 12.20 | 2419.26 | 1035.21 |
