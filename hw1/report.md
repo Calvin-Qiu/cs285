@@ -34,7 +34,7 @@ python cs285/scripts/run_hw1_behavior_cloning.py --expert_policy_file cs285/poli
 ```
 ![dagger](2.png)
 
-*Fig 2: training steps = 5000, eval_batch_size 5000*
+*Fig 2: training steps = 5000, eval_batch_size = 5000*
 
-We observe significant improvement in reward when using Dagger over naive Behavioral Cloning.
+We observe significant improvement in reward when using Dagger over naive Behavioral Cloning. Note the reward for Behavioral Cloning does not change over each iteration because BC is set to always perform 1 iteration only.
 
