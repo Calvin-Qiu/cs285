@@ -24,6 +24,7 @@ for num_steps in {0..3000..300}; do
 done;
 ```
 ![bc](1.png)
+
 *Fig 1: Increasing training steps from 0 to 3000 leads to higher reward*
 
 # Dagger
@@ -32,6 +33,7 @@ To run Dagger
 python cs285/scripts/run_hw1_behavior_cloning.py --expert_policy_file cs285/policies/experts/Humanoid.pkl --env_name Humanoid-v2 --exp_name test_bc_humanoid --n_iter 50 --do_dagger --expert_data cs285/expert_data/expert_data_Humanoid-v2.pkl --num_agent_train_steps_per_iter 5000 --eval_batch_size 5000 --video_log_freq -1 --use_gpu
 ```
 ![dagger](2.png)
+
 *Fig 2: training steps = 5000, eval_batch_size 5000*
 
 We observe significant improvement in reward when using Dagger over naive Behavioral Cloning.
