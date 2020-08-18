@@ -17,7 +17,7 @@ The following table comapres Behavioral Cloning with Expert policy in Ant and Hu
 
 *Table 1: Behavioral Cloning vs Expert with eval_batch_size = 10000*
 
-To run various with training steps:
+To run with various training steps:
 ```bash
 for num_steps in {0..3000..300}; do
 	python cs285/scripts/run_hw1_behavior_cloning.py --expert_policy_file cs285/policies/experts/Ant.pkl --env_name Ant-v2 --exp_name test_bc_ant --n_iter 1 --expert_data cs285/expert_data/expert_data_Ant-v2.pkl --num_agent_train_steps_per_iter ${num_steps} --eval_batch_size 10000 --video_log_freq -1;
