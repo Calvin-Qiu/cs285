@@ -7,7 +7,7 @@ import time
 def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('rgb_array')):
 
     # initialize env for the beginning of a new rollout
-    ob = TODO # TODO: GETTHIS from HW1
+    ob = env.reset() # TODO: GETTHIS from HW1
 
     # init vars
     obs, acs, rewards, next_obs, terminals, image_obs = [], [], [], [], [], []
@@ -30,7 +30,7 @@ def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('
 
         # use the most recent ob to decide what to do
         obs.append(ob)
-        ac = TODO # TODO: GETTHIS from HW1
+        ac = policy.get_action(ob) # TODO: GETTHIS from HW1
         ac = ac[0]
         acs.append(ac)
 
@@ -44,7 +44,7 @@ def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('
 
         # End the rollout if the rollout ended 
         # Note that the rollout can end due to done, or due to max_path_length
-        rollout_done = TODO # TODO: GETTHIS from HW1
+        rollout_done = done or (steps > max_path_length) # TODO: GETTHIS from HW1
         terminals.append(rollout_done)
         
         if rollout_done: 
@@ -53,15 +53,21 @@ def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('
     return Path(obs, image_obs, acs, rewards, next_obs, terminals)
 
 def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, render=False, render_mode=('rgb_array')):
-
-    # TODO: GETTHIS from HW1
-
+    timesteps_this_batch = 0
+    paths = []
+    while timesteps_this_batch < min_timesteps_per_batch:
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        paths.append(path)
+        timesteps_this_batch += get_pathlength(path) 
     return paths, timesteps_this_batch
 
 def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False, render_mode=('rgb_array')):
-    
     # TODO: GETTHIS from HW1
-
+    paths = []
+    for i in range(ntraj):
+        # collect rollout
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        paths.append(path)
     return paths
 
 ############################################
