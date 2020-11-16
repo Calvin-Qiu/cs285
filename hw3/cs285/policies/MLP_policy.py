@@ -107,8 +107,11 @@ class MLPPolicy(BasePolicy):
     # query the neural net that's our 'policy' function, as defined by an mlp above
     # query the policy with observation(s) to get selected action(s)
     def get_action(self, obs):
-
-        # TODO: GETTHIS from HW1
+        if len(obs.shape) > 1:
+            observation = obs
+        else:
+            observation = obs[None]
+        return self.sess.run(self.sample_ac, feed_dict={self.observations_pl: observation})
 
 #####################################################
 #####################################################
@@ -121,7 +124,53 @@ class MLPPolicy(BasePolicy):
 #####################################################
 
 class MLPPolicyPG(MLPPolicy):
-    # TODO: GETTHIS from HW2
+    def define_placeholders(self):
+        # placeholder for observations
+        self.observations_pl = tf.placeholder(shape=[None, self.ob_dim], name="ob", dtype=tf.float32)
+
+        # placeholder for actions
+        if self.discrete:
+            self.actions_pl = tf.placeholder(shape=[None], name="ac", dtype=tf.int32)
+        else:
+            self.actions_pl = tf.placeholder(shape=[None, self.ac_dim], name="ac", dtype=tf.float32)
+
+        if self.training:
+            # placeholder for advantage
+            self.adv_n = tf.placeholder(shape=[None], name="adv", dtype=tf.float32)
+
+            if self.nn_baseline:
+                # targets for baseline
+                self.targets_n = tf.placeholder(shape=[None], name="baseline_target", dtype=tf.float32)
+
+    #########################
+
+    def define_train_op(self):
+
+        # define the log probability of seen actions/observations under the current policy
+        self.define_log_prob()
+        self.loss = - tf.reduce_sum(self.logprob_n * self.adv_n)
+        self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+
+        if self.nn_baseline:
+            self.baseline_loss = tf.losses.mean_squared_error(self.baseline_prediction, self.targets_n)
+            self.baseline_update_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.baseline_loss)
+
+    #########################
+
+    def run_baseline_prediction(self, obs):
+        if len(obs.shape) > 1:
+            observation = obs
+        else:
+            observation = obs[None]
+        return self.sess.run(self.baseline_prediction, feed_dict={self.observations_pl: observation})
+
+    def update(self, observations, acs_na, adv_n=None, acs_labels_na=None, qvals=None):
+        assert(self.training, 'Policy must be created with training=True in order to perform training updates...')
+        _, loss = self.sess.run([self.train_op, self.loss], feed_dict={self.observations_pl: observations, self.actions_pl: acs_na, self.adv_n: adv_n})
+        if self.nn_baseline:
+            targets_n = (qvals - np.mean(qvals)) / (np.std(qvals) + 1e-8)
+            self.sess.run(self.baseline_update_op, feed_dict={self.observations_pl: observations, self.targets_n: targets_n})
+        return loss
 
 #####################################################
 #####################################################
